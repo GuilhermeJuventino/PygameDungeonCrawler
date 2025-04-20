@@ -9,8 +9,8 @@ class Dungeon:
         self.side_front_walls = []
 
         self.map = [
-            [1, 1, 1],
-            [1, 0, 0],
+            [1, 0, 1],
+            [1, 0, 1],
             [1, 0, 1]
         ]
 
@@ -68,6 +68,9 @@ class Dungeon:
             elif self.map[i][0] == 1:
                 surface.blit(self.side_walls[counter], (offset, 0))
 
+                if self.map[i][1] == 1:
+                    break
+
             offset += 16
             counter += 1
 
@@ -102,6 +105,9 @@ class Dungeon:
                                                    True, False),
                              (128 - offset, 0))
 
+                if self.map[i][1] == 1:
+                    break
+
             offset += 16
             counter += 1
 
@@ -112,6 +118,7 @@ class Dungeon:
         for i in range(2, -1, -1):
             if self.map[i][1] == 1:
                 self.surface.blit(self.front_walls[counter], (16 + offset, 0))
+                break
 
             offset += 16
             counter += 1
