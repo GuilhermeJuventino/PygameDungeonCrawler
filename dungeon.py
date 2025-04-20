@@ -9,8 +9,8 @@ class Dungeon:
         self.side_front_walls = []
 
         self.map = [
-            [1, 0, 1],
-            [1, 0, 1],
+            [1, 1, 1],
+            [1, 0, 0],
             [1, 0, 1]
         ]
 
@@ -61,7 +61,9 @@ class Dungeon:
                 break
 
             if self.map[i][0] == 0:
-                if self.map[i - 1][0] == 1 or self.map[i][1] == 1:
+                if self.map[i][1] == 1:
+                    surface.blit(self.corner_walls[counter], (offset, 0))
+                elif i >= 1 and self.map[i - 1][0] == 1:
                     surface.blit(self.corner_walls[counter], (offset, 0))
             elif self.map[i][0] == 1:
                 surface.blit(self.side_walls[counter], (offset, 0))
@@ -69,10 +71,116 @@ class Dungeon:
             offset += 16
             counter += 1
 
+    def draw_right_wall(self, surface):
+        # Offset X position between each segment of the wall
+        offset = 0
+
+        # Index counter for the walls list, important due to the
+        # reverse for loop, as i will be inverted because of it.
+        counter = 0
+
+        # Starting from the top of the map to the bottom,
+        # for every point in the map
+        # Check if it's 1, if so,
+        # draw appropriate side wall sprite based on counter index
+        # Else, if 0, check if any of the adjacent points are 1,
+        # if so draw corner wall in that position
+        # Else, draw nothing.
+        for i in range(2, -1, -1):
+            if i > len(self.map) + 1:
+                break
+
+            if self.map[i][2] == 0:
+                if self.map[i][1] == 1:
+                    surface.blit(pygame.transform.flip(self.corner_walls[counter], True, False),
+                                 (128 - offset, 0))
+                elif i >= 1 and self.map[i - 1][2] == 1:
+                    surface.blit(pygame.transform.flip(self.corner_walls[counter], True, False),
+                                 (128 - offset, 0))
+            elif self.map[i][2] == 1:
+                surface.blit(pygame.transform.flip(self.side_walls[counter],
+                                                   True, False),
+                             (128 - offset, 0))
+
+            offset += 16
+            counter += 1
+
+    def draw_center_wall(self, surface):
+        offset = 0
+        counter = 0
+
+        for i in range(2, -1, -1):
+            if self.map[i][1] == 1:
+                self.surface.blit(self.front_walls[counter], (16 + offset, 0))
+
+            offset += 16
+            counter += 1
+
+    def get_draw_matrix(self):
+        draw_matrix = [
+            [],
+            [],
+            []
+        ]
+
+        for i in range(0, 3):
+            for j in range(0, 3):
+                if i > len(self.map) or j > len(self.map[i]):
+                    break
+
+                draw_matrix[i].append(self.map[i][j])
+
+        return draw_matrix
+
+    def draw_walls(self, surface):
+        draw_matrix = self.get_draw_matrix()
+        offset = 32
+
+        index_to_draw_left = 0
+        index_to_draw_right = 0
+        index_to_draw_center = 0
+
+        for i in range(0, 3):
+            if i > len(draw_matrix) + 1:
+                break
+
+            if draw_matrix[i][1] == 1:
+                index_to_draw_center = i
+
+            if draw_matrix[i][0] == 1:
+                index_to_draw_left == i
+
+            if draw_matrix[i][2] == 1:
+                index_to_draw_right == i
+
+        # draw center wall
+        self.surface.blit(self.front_walls[index_to_draw_center], (64, 0))
+
+        # draw left wall
+        for i in range(0, index_to_draw_left):
+            if i > len(draw_matrix):
+                break
+
+            if draw_matrix[i][0] == 1:
+                if i > index_to_draw_center:
+                    continue
+
+                self.surface.blit(self.side_walls[i](offset, 0))
+                offset -= 16
+            elif draw_matrix[i][0] == 0:
+                if draw_matrix[i][1] == 1 or i > 0 and draw_matrix[i-1][0] == 1:
+                    self.surface.blit(self.corner_walls[i], (offset, 0))
+                    offset -= 16
+
+        offset = 32
+
     def draw(self, surface):
         self.surface = surface
 
+        self.draw_center_wall(self.surface)
         self.draw_left_wall(self.surface)
+        self.draw_right_wall(self.surface)
+        # self.draw_walls(self.surface)
 
         """
         self.surface.blit(self.side_walls[0], (0, 0))
