@@ -9,7 +9,7 @@ class Dungeon:
         self.side_front_walls = []
 
         self.map = [
-            [1, 0, 1],
+            [1, 1, 1],
             [1, 0, 1],
             [1, 0, 1]
         ]
@@ -49,27 +49,38 @@ class Dungeon:
         # reverse for loop, as i will be inverted because of it.
         counter = 0
 
-        # Starting from the top of the map to the bottom,
-        # for every point in the map
-        # Check if it's 1, if so,
-        # draw appropriate side wall sprite based on counter index
-        # Else, if 0, check if any of the adjacent points are 1,
-        # if so draw corner wall in that position
-        # Else, draw nothing.
         for i in range(2, -1, -1):
-            if i > len(self.map) + 1:
+            if i > len(self.map):
                 break
 
-            if self.map[i][0] == 0:
-                if self.map[i][1] == 1:
-                    surface.blit(self.corner_walls[counter], (offset, 0))
-                elif i >= 1 and self.map[i - 1][0] == 1:
-                    surface.blit(self.corner_walls[counter], (offset, 0))
-            elif self.map[i][0] == 1:
-                surface.blit(self.side_walls[counter], (offset, 0))
+            if self.map[i][0] == 1:
+                if i == 1:
+                    if self.map[i + 1][0] == 0:
+                        self.surface.blit(
+                            self.corner_walls[counter], (offset, 0))
+                    else:
+                        self.surface.blit(
+                            self.side_walls[counter], (offset, 0))
+                elif i == 2:
+                    if self.map[i - 1][0] == 0:
+                        self.surface.blit(
+                            self.corner_walls[counter], (offset, 0))
+                    elif self.map[i - 1][0] == 1 and self.map[i][1] == 1:
+                        self.surface.blit(
+                            self.corner_walls[counter], (offset, 0))
+                    else:
+                        self.surface.blit(
+                            self.side_walls[counter], (offset, 0))
+                elif i == 0:
+                    if self.map[i + 1][0] == 0:
+                        self.surface.blit(
+                            self.corner_walls[counter], (offset, 0))
+                    else:
+                        self.surface.blit(
+                            self.side_walls[counter], (offset, 0))
 
-                if self.map[i][1] == 1:
-                    break
+            if self.map[i][1] == 1:
+                break
 
             offset += 16
             counter += 1
@@ -82,31 +93,38 @@ class Dungeon:
         # reverse for loop, as i will be inverted because of it.
         counter = 0
 
-        # Starting from the top of the map to the bottom,
-        # for every point in the map
-        # Check if it's 1, if so,
-        # draw appropriate side wall sprite based on counter index
-        # Else, if 0, check if any of the adjacent points are 1,
-        # if so draw corner wall in that position
-        # Else, draw nothing.
         for i in range(2, -1, -1):
-            if i > len(self.map) + 1:
+            if i > len(self.map):
                 break
 
-            if self.map[i][2] == 0:
-                if self.map[i][1] == 1:
-                    surface.blit(pygame.transform.flip(self.corner_walls[counter], True, False),
-                                 (128 - offset, 0))
-                elif i >= 1 and self.map[i - 1][2] == 1:
-                    surface.blit(pygame.transform.flip(self.corner_walls[counter], True, False),
-                                 (128 - offset, 0))
-            elif self.map[i][2] == 1:
-                surface.blit(pygame.transform.flip(self.side_walls[counter],
-                                                   True, False),
-                             (128 - offset, 0))
+            if self.map[i][2] == 1:
+                if i == 1:
+                    if self.map[i + 1][2] == 0:
+                        self.surface.blit(
+                            pygame.transform.flip(self.corner_walls[counter], True, False), (128 - offset, 0))
+                    else:
+                        self.surface.blit(
+                            pygame.transform.flip(self.side_walls[counter], True, False), (128 - offset, 0))
+                elif i == 2:
+                    if self.map[i - 1][2] == 0:
+                        self.surface.blit(
+                            pygame.transform.flip(self.corner_walls[counter], True, False), (128 - offset, 0))
+                    elif self.map[i - 1][2] == 1 and self.map[i][1] == 1:
+                        self.surface.blit(
+                            pygame.transform.flip(self.corner_walls[counter], True, False), (128 - offset, 0))
+                    else:
+                        self.surface.blit(
+                            pygame.transform.flip(self.side_walls[counter], True, False), (128 - offset, 0))
+                elif i == 0:
+                    if self.map[i + 1][2] == 0:
+                        self.surface.blit(
+                            pygame.transform.flip(self.corner_walls[counter], True, False), (128 - offset, 0))
+                    else:
+                        self.surface.blit(
+                            pygame.transform.flip(self.side_walls[counter], True, False), (128 - offset, 0))
 
-                if self.map[i][1] == 1:
-                    break
+            if self.map[i][1] == 1:
+                break
 
             offset += 16
             counter += 1
